@@ -694,11 +694,19 @@ public abstract class AbstractCursor implements Cursor {
     }
 
     public BigDecimal getBigDecimal(int scale) throws SQLException {
-      return (BigDecimal) getObject();
+      BigDecimal decimal = getBigDecimal();
+      if (0 != scale) {
+        return decimal.setScale(scale, RoundingMode.UNNECESSARY);
+      }
+      return decimal;
     }
 
     public BigDecimal getBigDecimal() throws SQLException {
-      return (BigDecimal) getObject();
+      Object o = getObject();
+      if (o == null) {
+        return null;
+      }
+      return AvaticaSite.toBigDecimal(o);
     }
   }
 
